@@ -33,6 +33,14 @@ else
     sudo -u postgres psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '$postgres_password';"
 fi
 
+# Check if the 'phoenix' database exists
+if sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw phoenix; then
+    echo "The 'phoenix' database already exists."
+else
+    echo "Creating a PostgreSQL database named 'phoenix'..."
+    sudo -u postgres createdb phoenix
+fi
+
 echo "Installed versions:"
 echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
 echo "Elixir $(elixir --version)"
