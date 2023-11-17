@@ -5,18 +5,33 @@
 echo "Updating package list..."
 sudo apt update
 
-echo "Installing Erlang..."
-sudo apt install -y esl-erlang
+echo "Checking Erlang..."
+if command -v erl > /dev/null; then
+    echo "Erlang is already installed."
+else
+    echo "Installing Erlang..."
+    sudo apt install -y erlang
+fi
 
-echo "Installing Elixir..."
-sudo apt install -y elixir
+echo "Checking Elixir..."
+if command -v elixir > /dev/null; then
+    echo "Elixir is already installed."
+else
+    echo "Installing Elixir..."
+    sudo apt install -y elixir
+fi
 
-echo "Installing PostgreSQL..."
-sudo apt install -y postgresql postgresql-contrib
-
-postgres_password="postgres"
-echo "Setting a predefined password for the PostgreSQL user 'postgres'..."
-sudo -u postgres psql -c "alter user postgres with encrypted password '$postgres_password';"
+echo "Checking Postgres..."
+if dpkg -s postgresql &> /dev/null; then
+    echo "PostgreSQL is already installed."
+else
+    echo "Installing PostgreSQL..."
+    sudo apt install -y postgresql postgresql-contrib
+    
+    postgres_password="postgres"
+    echo "Setting a predefined password for the PostgreSQL user 'postgres'..."
+    sudo -u postgres psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '$postgres_password';"
+fi
 
 echo "Installed versions:"
 echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
