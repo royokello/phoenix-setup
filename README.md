@@ -20,7 +20,7 @@ This script automates the setup process for an Ubuntu server to run a Phoenix we
 3. Run the script:
 
     ```bash
-    ./setup_phoenix_server.sh
+    ./phoenix-server-setup.sh
     ```
 
 4. Follow the prompts to set the PostgreSQL user password.
