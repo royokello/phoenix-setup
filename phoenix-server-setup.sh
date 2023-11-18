@@ -27,19 +27,17 @@ if dpkg -s postgresql &> /dev/null; then
 else
     echo "Installing PostgreSQL..."
     sudo apt install -y postgresql postgresql-contrib
-    
-    postgres_password="postgres"
-    echo "Setting a predefined password for the PostgreSQL user 'postgres'..."
-    sudo -u postgres psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '$postgres_password';"
 fi
 
-# Check if the 'phoenix' database exists
-if sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -qw phoenix; then
-    echo "The 'phoenix' database already exists."
+# Check if the "root" user is in postgres, if not add one with the password "postgres"
+if sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='root'" | grep -q 1; then
+    echo "User 'root' already exists in PostgreSQL."
 else
-    echo "Creating a PostgreSQL database named 'phoenix'..."
-    sudo -u postgres createdb phoenix
+    echo "Adding 'root' user to PostgreSQL..."
+    sudo -u postgres psql -c "CREATE USER root WITH PASSWORD 'postgres';"
+    sudo -u postgres psql -c "ALTER USER root WITH SUPERUSER;"
 fi
+
 
 echo "Installed versions:"
 echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
