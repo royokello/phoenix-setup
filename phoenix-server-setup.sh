@@ -29,15 +29,11 @@ else
     sudo apt install -y postgresql postgresql-contrib
 fi
 
-# Check if the "root" user is in postgres, if not add one with the password "postgres"
-if sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='root'" | grep -q 1; then
-    echo "User 'root' already exists in PostgreSQL."
-else
-    echo "Adding 'root' user to PostgreSQL..."
-    sudo -u postgres psql -c "CREATE USER root WITH PASSWORD 'postgres';"
-    sudo -u postgres psql -c "ALTER USER root WITH SUPERUSER;"
-fi
+echo Setting the default user "postgres" password to "postgres"
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
 
+echo Giving superuser privileges to the root user within PostgreSQL
+sudo -u postgres psql -c "ALTER USER root WITH SUPERUSER;"
 
 echo "Installed versions:"
 echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
