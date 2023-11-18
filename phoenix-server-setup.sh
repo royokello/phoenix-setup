@@ -30,10 +30,7 @@ else
 fi
 
 echo Setting the default user "postgres" password to "postgres"
-sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
-
-echo Giving superuser privileges to the root user within PostgreSQL
-sudo -u postgres psql -c "ALTER USER root WITH SUPERUSER;"
+su - postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres';\""
 
 echo "Installed versions:"
 echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
