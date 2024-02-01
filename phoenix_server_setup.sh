@@ -35,10 +35,8 @@ fi
 echo Setting the default user "postgres" password to "postgres"
 su - postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres';\""
 
-echo "Installed versions:"
-echo "Erlang $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
-echo "Elixir $(elixir --version)"
-echo "PostgreSQL $(psql --version)"
+echo "Checking for 'phoenix' database..."
+su - postgres -c "psql -lqt | cut -d \| -f 1 | grep -qw phoenix || psql -c \"CREATE DATABASE phoenix;\""
 
 # Optionally, inform the user about installing Node.js and npm for assets management in Phoenix
 # Uncomment the line below if you want to install Node.js and npm
