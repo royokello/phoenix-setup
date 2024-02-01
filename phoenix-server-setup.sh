@@ -26,7 +26,7 @@ if dpkg -s postgresql &> /dev/null; then
     echo "PostgreSQL is already installed."
 else
     echo "Installing PostgreSQL..."
-    sudo apt install -y postgresql postgresql-contrib
+    sudo apt install -y postgresql
 fi
 
 echo Setting the default user "postgres" password to "postgres"
