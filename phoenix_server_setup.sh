@@ -21,6 +21,9 @@ else
     sudo apt install -y elixir
 fi
 
+echo "Checking Mix..."
+mix local.hex
+
 echo "Checking Postgres..."
 if dpkg -s postgresql &> /dev/null; then
     echo "PostgreSQL is already installed."
