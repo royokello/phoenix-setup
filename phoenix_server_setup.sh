@@ -2,6 +2,13 @@
 
 # This script sets up an Ubuntu server for a Phoenix app.
 
+PROJECT_NAME=$1
+
+if [ -z "$PROJECT_NAME" ]; then
+  echo "Error: Project name is required as the first argument."
+  exit 1
+fi
+
 echo "Updating package list..."
 sudo apt update
 
@@ -22,9 +29,9 @@ else
 fi
 
 echo "Checking Mix..."
-mix local.hex
+mix local.hex --force
 
-echo "Checking Postgres..."
+echo "Checking PostgreSQL..."
 if dpkg -s postgresql &> /dev/null; then
     echo "PostgreSQL is already installed."
 else
@@ -32,14 +39,17 @@ else
     sudo apt install -y postgresql
 fi
 
-echo Setting the default user "postgres" password to "postgres"
-su - postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres';\""
+echo "Creating database user and password for $PROJECT_NAME..."
+sudo -u postgres psql -c "CREATE USER $PROJECT_NAME WITH PASSWORD '$PROJECT_NAME';"
 
-echo "Checking for 'phoenix' database..."
-su - postgres -c "psql -lqt | cut -d \| -f 1 | grep -qw phoenix || psql -c \"CREATE DATABASE phoenix;\""
+echo "Creating database for $PROJECT_NAME..."
+sudo -u postgres psql -c "CREATE DATABASE $PROJECT_NAME OWNER $PROJECT_NAME;"
+
+echo "Granting privileges to user $PROJECT_NAME on database $PROJECT_NAME..."
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $PROJECT_NAME TO $PROJECT_NAME;"
 
 # Optionally, inform the user about installing Node.js and npm for assets management in Phoenix
-# Uncomment the line below if you want to install Node.js and npm
+# Uncomment the lines below if you want to install Node.js and npm
 # echo "Installing Node.js and npm for assets management in Phoenix..."
 # sudo apt install -y nodejs npm
 
