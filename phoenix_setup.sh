@@ -108,13 +108,6 @@ setup_database() {
     echo "PostgreSQL user and database for '${PROJECT_NAME}' created successfully."
 }
 
-# Function to install Rust
-install_rust() {
-    echo "Installing Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || error_exit "Failed to install Rust."
-    source $HOME/.cargo/env
-    echo "Rust installed successfully."
-}
 
 # Main script execution
 main() {
@@ -129,7 +122,6 @@ main() {
     else
         echo "Database setup flag is false. Skipping PostgreSQL installation."
     fi
-    install_rust
     echo "Setup complete!"
 }
 
